@@ -9,8 +9,8 @@ body {
 }
 
 .function {
-	border: 1px #888888 solid;
-	background: #bbbbbb;
+	border: 1px #888 solid;
+	background: #bbb;
 }
 
 .card {
@@ -36,27 +36,23 @@ body {
 }
 
 /* Two column layout adopted from http://www.maxdesign.com.au/articles/css-layouts/two-liquid/ */
-#container
-{
+#container {
 	margin: 0 auto;
 	width: 100%;
 	background: #fff;
 }
 
-#header
-{
+#header {
 	background: #ccc;
 	padding: 20px;
 }
 
-#content-container
-{
+#content-container {
 	float: left;
 	width: 100%;
 }
 
-#content
-{
+#content {
 	clear: left;
 	float: left;
 	width: 40%;
@@ -65,10 +61,11 @@ body {
 	display: inline;
 }
 
-#content h2 { margin: 0; }
+#content h2 { 
+	margin: 0; 
+}
 
-#aside
-{
+#aside {
 	float: right;
 	width: 46%;
 	padding: 20px 0;
@@ -76,4 +73,6 @@ body {
 	display: inline;
 }
 
-#aside h3 { margin: 0; }
+#aside h3 { 
+	margin: 0; 
+}
