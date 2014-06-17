@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pretty Good ID</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<div id="content-container">
+			<div id="content">
+				<div>
+					<label for="desc"><b>Description</b></label><br />
+					<small>This field is optional. It lets you identify the PGID by giving it a meaningful label.</small><br />
+					<input id="desc" size="64" type="text" />
+				</div><br/>
+				<div>
+					<label for="fullname"><b>Full name</b></label><br />
+					<small>This field is optional. It helps to prefill the form during registration for websites that require this information.</small><br />
+					<input id="fullname" size="64" type="text" />
+				</div><br/>
+				<div>
+					<label for="shortname"><b>Short name (or nickname)</b></label><br />
+					<small>This field is optional. It helps to prefill the form during registration for websites that supports a nickname or alias, such as online forums.</small><br />
+					<input id="shortname" size="64" type="text" />
+				</div><br />
+				<div>
+					<label for="email"><b>Email address</b></label><br />
+					<small>This field is optional. Many websites use the email address as a means of unique identification and communication. Having this information helps to prefill the form during registration.</small><br />
+					<input id="email" size="64" type="text" />
+				</div><br />
+				<div>
+					<button id="generate">Generate new PGID</button>
+					<span id="progress" class="progress" />
+				</div><br />
+				<div>
+					<input id="fileloader" type="file" name="qrfile" accept="image/*" style="display:none" />
+					<button id="loadfile">Open QR-Code image file</button>
+				</div>
+			</div>
+			<div id="aside" style="display:none">
+				<b>Key Text</b><br />
+				<p><textarea id="keytext" class="keytext" rows="8" cols="65" readonly="true"></textarea></p>
+				<b>Encoded as QR-Code</b>
+				</br /></br />
+				<div id="card"><table class="card">
+					<tr>
+						<td align="center">
+							<img src="id.png" />
+							<p><small><b><span id="displayname"></span></b></small></p>
+						</td>
+						<td align="center">
+							<img id="qrcode" width="320" height="320" />
+							<small><i>(Right-click to save this QR-Code)</i></small>
+						</td>
+					</tr>
+				</table></div>
+			</div>
+		</div>
+		<canvas id="canvas" width="10" height="10" style="display:none" />
+		<script src="jquery-2.1.1.min.js"></script>
+		<script src="jsencrypt.min.js"></script> <!-- https://github.com/travist/jsencrypt -->
+		<script src="qrencoder.min.js"></script> <!-- https://bitbucket.org/lifthrasiir/qrjs/ -->
+		<script src="qrdecoder.min.js"></script> <!-- http://qrlogo.kaarposoft.dk/ -->
+		<script src="sha1sum.min.js"></script> <!-- http://www.movable-type.co.uk/scripts/sha1.html -->
+		<script src="options.js"></script> <!-- https://github.com/eligrey/FileSaver.js/ -->
+	</body>
+</html>
