@@ -124,15 +124,29 @@ function decryptPrivateKey(seckey, password) {
 			deferred.reject('Failed to decrypt the private key');
 		};
 		decryptionOp.oncomplete = function(unencryptedseckey) {
-			var unencryptedseckeyarr = new Uint8Array(unencryptedseckey);
-			var unencryptedseckeybase64 = base64EncArr(unencryptedseckeyarr);
-			var wrappedunencryptedseckey = wordwrap(unencryptedseckeybase64, 64);
-			deferred.resolve(wrappedunencryptedseckey);
+			if (validateASN1(unencryptedseckey)) {
+				var unencryptedseckeyarr = new Uint8Array(unencryptedseckey);
+				var unencryptedseckeybase64 = base64EncArr(unencryptedseckeyarr);
+				var wrappedunencryptedseckey = wordwrap(unencryptedseckeybase64, 64);
+				deferred.resolve(wrappedunencryptedseckey);
+			} else {
+				deferred.reject('Wrong master password');
+			}
 		}
 		Encryption.AES.decrypt(decryptionOp);
 	};
 	Encryption.PBKDF2.deriveKey(keyDerivationOp);
 	return deferred;
+}
+
+function validateASN1(der) {
+	var derbuf = new forge.util.ByteBuffer(der);
+	try {
+		forge.asn1.fromDer(derbuf, true);
+		return true;
+	} catch (e) {
+		return false;
+	}
 }
 
 function wordwrap(string, width) {
