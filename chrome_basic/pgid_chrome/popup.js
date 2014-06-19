@@ -31,15 +31,16 @@ function initPopup(msg) {
 		$('#register').bind('click', function() {
 			onRegisterClick(msg);
 		});
+		$('#register_list').change(onActiveUidChange);
 	}
 	// Enable/disable login function
 	if (msg === undefined || msg.login === undefined) {
 		$('#login_panel').remove();
-	}
-	else {
+	} else {
 		$('#login').bind('click', function() {
 			onLoginClick(msg);
 		});
+		$('#login_list').change(onActiveUidChange);
 	}
 	// Enable/disable update function
 	if (msg === undefined || msg.update === undefined) {
@@ -56,17 +57,47 @@ function initPopup(msg) {
 		$('#updatepw').bind('click', function() {
 			onUpdatePwClick(msg);
 		});
+		$('#updatepw_list').change(onActiveUidChange);
+	}
+	
+	if (shouldShowMasterPasswordField()) {
+		$('#masterpw_panel').show();
+	}
+}
+
+function shouldShowMasterPasswordField() {
+	var idlist = chrome.extension.getBackgroundPage().idlist;
+	if ($('#login_list').length) {
+		return !idlist[$('#login_list').val()].decrypted;
+	} else if ($('#register_list').length) {
+		return !idlist[$('#register_list').val()].decrypted;
+	} else if ($('#updatepw_list').length) {
+		return !idlist[$('#updatepw_list').val()].decrypted;
+	} else {
+		return false;
+	}
+}
+
+function onActiveUidChange() {
+	var idlist = chrome.extension.getBackgroundPage().idlist;
+	if (idlist[$(this).val()].decrypted) {
+		$('#masterpw_panel').slideUp();
+	} else {
+		$('#master_password').val('');
+		$('#masterpw_panel').slideDown();
 	}
 }
 
 function onRegisterClick(msg) {
 	msg.uid = $('#register_list option:selected').val();
+	msg.masterpw = $('#master_password').val();
 	chrome.extension.sendMessage({cmd: 'register', payload: msg});
 	hidePopup();
 }
 
 function onLoginClick(msg) {
 	msg.uid = $('#login_list option:selected').val();
+	msg.masterpw = $('#master_password').val();
 	chrome.extension.sendMessage({cmd: 'login', payload: msg});
 	hidePopup();
 }
@@ -84,6 +115,7 @@ function onUpdateClick(msg) {
 
 function onUpdatePwClick(msg) {
 	msg.uid = $('#updatepw_list option:selected').val();
+	msg.masterpw = $('#master_password').val();
 	msg.password = $('#updatepw_password').val();
 	if (msg.password.length == 0) {
 		$('#updatepw_password').css({ 'border': '2px solid red' });

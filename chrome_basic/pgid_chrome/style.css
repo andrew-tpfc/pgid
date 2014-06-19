@@ -30,6 +30,11 @@ body {
 	font-style: italic;
 }
 
+.centered {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 /* Two column layout adopted from http://www.maxdesign.com.au/articles/css-layouts/two-liquid/ */
 #container
 {

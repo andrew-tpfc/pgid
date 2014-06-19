@@ -1,8 +1,11 @@
 "use strict";
 
 $(document).ready(function() {
-	$('#generate').bind('click', function() {
-		onGenerateClick();
+	$('#generate').bind('click', function(evt) {
+		if ($('#pgiddata').get(0).checkValidity()) {
+			onGenerateClick();
+		}
+		evt.preventDefault();
 	});
 	$('#loadfile').bind('click', function() {
 		$('#aside').hide();
@@ -10,6 +13,9 @@ $(document).ready(function() {
 	});
 	$('#fileloader').bind('change', function(evt) {
 		onLoadFileChange(evt);
+	});
+	$('#pgiddata input').on('invalid', function(evt) {
+		$(evt.target).css({'border': '2px solid red'});
 	});
 });
 
@@ -45,6 +51,7 @@ function onGenerateClick() {
 		var uid = Sha1.hash(seckey.replace(/(\r\n|\n|\r)/gm,''), true);
 
 		// Grab the various header values from UI
+		var masterpw = $('#masterpw').val().trim();
 		var desc = $('#desc').val().trim();
 		var fullname = $('#fullname').val().trim();
 		var shortname = $('#shortname').val().trim();
@@ -72,8 +79,57 @@ function onGenerateClick() {
 
 		// Add generated ID to background page so that we can use it later
 		var idlist = chrome.extension.getBackgroundPage().idlist;
-		chrome.extension.getBackgroundPage().idlist[uid] = { name: dspname, keytext: keytext};
+		chrome.extension.getBackgroundPage().idlist[uid] = { name: dspname, keytext: keytext, decrypted: true };
+		
+		// Encrypt the generated ID for storage
+		var encryptedkeytext = '-----BEGIN PGID HEADER-----\n';
+		encryptedkeytext += 'pgid-uid: ' + uid + '\n';
+		if (desc != '') encryptedkeytext += 'pgid-desc: ' + desc + '\n';
+		if (fullname != '') encryptedkeytext += 'pgid-fullname: ' + fullname + '\n';
+		if (shortname != '') encryptedkeytext += 'pgid-shortname: ' + shortname + '\n';
+		if (email != '') encryptedkeytext += 'pgid-email: ' + email + '\n';
+		encryptedkeytext += '-----END PGID HEADER-----\n';
+		encryptedkeytext += '-----BEGIN RSA PRIVATE KEY-----\n';
+		encryptPrivateKey(seckey, masterpw)
+		.done(function(seckey) {
+			encryptedkeytext += seckey + '\n';
+			encryptedkeytext += '-----END RSA PRIVATE KEY-----\n';
+			encryptedkeytext += pubkey;
+			
+			// Store the encrypted ID
+			var items = {};
+			items[uid] = encryptedkeytext;
+			chrome.storage.local.set(items);
+		});
 	});
+}
+
+function encryptPrivateKey(seckey, password) {
+	var deferred = $.Deferred();
+	var regex = /-----BEGIN RSA PRIVATE KEY-----([^]*)-----END RSA PRIVATE KEY-----/m;
+	var seckeycontent = regex.exec(seckey)[1];
+	var seckeyarr = base64DecToArr(seckeycontent);
+	var keyDerivationOp = {};
+	keyDerivationOp.password = password;
+	keyDerivationOp.onerror = function() {
+		deferred.reject('Failed to derive the encryption key from the password');
+	};
+	keyDerivationOp.oncomplete = function(key) {
+		var encryptionOp = {};
+		encryptionOp.data = seckeyarr;
+		encryptionOp.key = key;
+		encryptionOp.onerror = function() {
+			deferred.reject('Failed to encrypt the private key');
+		};
+		encryptionOp.oncomplete = function(encryptedseckey) {
+			var encryptedseckeyarr = new Uint8Array(encryptedseckey);
+			var encryptedseckeybase64 = base64EncArr(encryptedseckeyarr);
+			deferred.resolve(encryptedseckeybase64);
+		}
+		Encryption.AES.encrypt(encryptionOp);
+	};
+	Encryption.PBKDF2.deriveKey(keyDerivationOp);
+	return deferred;
 }
 
 function onLoadFileChange(evt) {
@@ -117,9 +173,9 @@ function onLoadFileChange(evt) {
 			$('#qrcode').attr('src', evt.target.result);
 			$('#aside').show();
 
-			// Add generated ID to background page so that we can use it later
+			// Add decoded ID to background page so that we can use it later
 			var idlist = chrome.extension.getBackgroundPage().idlist;
-			chrome.extension.getBackgroundPage().idlist[uid[1]] = { name: dspname, keytext: keytext};
+			chrome.extension.getBackgroundPage().idlist[uid[1]] = { name: dspname, keytext: keytext, decrypted: true };
 		};
 		img.src = evt.target.result
 	};
