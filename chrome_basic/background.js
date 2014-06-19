@@ -124,14 +124,10 @@ function decryptPrivateKey(seckey, password) {
 			deferred.reject('Failed to decrypt the private key');
 		};
 		decryptionOp.oncomplete = function(unencryptedseckey) {
-			if (unencryptedseckey.byteLength == 1192) {
-				var unencryptedseckeyarr = new Uint8Array(unencryptedseckey);
-				var unencryptedseckeybase64 = base64EncArr(unencryptedseckeyarr);
-				var wrappedunencryptedseckey = wordwrap(unencryptedseckeybase64, 64);
-				deferred.resolve(wrappedunencryptedseckey);
-			} else {
-				deferred.reject('Wrong master password');
-			}
+			var unencryptedseckeyarr = new Uint8Array(unencryptedseckey);
+			var unencryptedseckeybase64 = base64EncArr(unencryptedseckeyarr);
+			var wrappedunencryptedseckey = wordwrap(unencryptedseckeybase64, 64);
+			deferred.resolve(wrappedunencryptedseckey);
 		}
 		Encryption.AES.decrypt(decryptionOp);
 	};
