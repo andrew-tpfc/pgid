@@ -59,20 +59,33 @@ function initPopup(msg) {
 		});
 		$('#updatepw_list').change(onActiveUidChange);
 	}
-	
+
 	if (shouldShowMasterPasswordField()) {
 		$('#masterpw_panel').show();
+	}
+
+	var activeList = getIDOfMostImportantVisibleList();
+	$('#form').data('activeList', activeList);
+}
+
+function getIDOfMostImportantVisibleList() {
+	var idlist = chrome.extension.getBackgroundPage().idlist;
+	if ($('#login_list').length) {
+		return 'login_list'
+	} else if ($('#register_list').length) {
+		return 'register_list'
+	} else if ($('#updatepw_list').length) {
+		return 'updatepw_list'
+	} else {
+		return null;
 	}
 }
 
 function shouldShowMasterPasswordField() {
 	var idlist = chrome.extension.getBackgroundPage().idlist;
-	if ($('#login_list').length) {
-		return !idlist[$('#login_list').val()].decrypted;
-	} else if ($('#register_list').length) {
-		return !idlist[$('#register_list').val()].decrypted;
-	} else if ($('#updatepw_list').length) {
-		return !idlist[$('#updatepw_list').val()].decrypted;
+	var listid = getIDOfMostImportantVisibleList();
+	if (listid !== null) {
+		return !idlist[$('#' + listid).val()].decrypted;
 	} else {
 		return false;
 	}
@@ -86,6 +99,7 @@ function onActiveUidChange() {
 		$('#master_password').val('');
 		$('#masterpw_panel').slideDown();
 	}
+	$('#form').data('activeList', this.id);
 }
 
 function onRegisterClick(msg) {
@@ -123,6 +137,11 @@ function onUpdatePwClick(msg) {
 		chrome.extension.sendMessage({cmd: 'updatepw', payload: msg});
 		hidePopup();
 	}
+}
+
+function onEnterPress() {
+	var buttonid = $('#form').data('activeList').replace('_list', '');
+	$('#' + buttonid).click();
 }
 
 function hidePopup() {

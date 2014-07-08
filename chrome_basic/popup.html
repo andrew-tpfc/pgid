@@ -5,32 +5,34 @@
 		<link href="style.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
-		<div id="register_panel" class="panel">
-			<button id="register">Register with</button>
-			<select id="register_list"></select>
-		</div>
-		<div id="login_panel" class="panel">
-			<button id="login">Login with</button>
-			<select id="login_list"></select>
-		</div>
-		<div id="updatepw_panel" class="panel">
-			<button id="updatepw">Update</button>
-			from
-			<input id="updatepw_password" type="password" size="16" placeholder="password" />
-			to
-			<select id="updatepw_list"></select>
-		</div>
-		<div id="update_panel" class="panel">
-			<button id="update">Update</button>
-			from
-			<select id="update_list1"></select>
-			to
-			<select id="update_list2"></select>
-		</div>
-		<div id="masterpw_panel" class="panel" style="display: none;">
-			<label for="master_password">Master password: </label>
-			<input id="master_password" type="password" size="16" />
-		</div>
+		<form id="form" action="javascript:onEnterPress();">
+			<div id="register_panel" class="panel">
+				<button id="register">Register with</button>
+				<select id="register_list"></select>
+			</div>
+			<div id="login_panel" class="panel">
+				<button id="login">Login with</button>
+				<select id="login_list"></select>
+			</div>
+			<div id="updatepw_panel" class="panel">
+				<button id="updatepw">Update</button>
+				from
+				<input id="updatepw_password" type="password" size="16" placeholder="password" />
+				to
+				<select id="updatepw_list"></select>
+			</div>
+			<div id="update_panel" class="panel">
+				<button id="update">Update</button>
+				from
+				<select id="update_list1"></select>
+				to
+				<select id="update_list2"></select>
+			</div>
+			<div id="masterpw_panel" class="panel" style="display: none;">
+				<label for="master_password">Master password: </label>
+				<input id="master_password" type="password" size="16" />
+			</div>
+		</form>
 		<script src="jquery-2.1.1.min.js"></script>
 		<script src="popup.js"></script>
 	</body>
