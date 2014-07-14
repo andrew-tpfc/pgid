@@ -10,7 +10,6 @@ $(document).ready(function() {
 			$('#updatepw_panel').remove();
 			$('[id=options_url]').on('click', function() { onOptionsClick(); });
 			if (reqPassword) $('#error1_panel').remove(); else $('#error2_panel').remove();
-			if (reqPassword) console.log('#1'); else console.log('#2');
 		} else {
 			// Update key lists
 			var idlist = chrome.extension.getBackgroundPage().idlist;
@@ -30,7 +29,6 @@ $(document).ready(function() {
 });
 
 function initPopup(msg) {
-	console.log(msg);
 	// Error messages should be hidden
 	$('#error1_panel').remove();
 	$('#error2_panel').remove();
