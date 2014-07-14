@@ -1,0 +1,28 @@
+{
+	"manifest_version"	: 2,
+	"name"				: "Pretty Good ID",
+	"description"		: "Pretty Good ID - Chrome Extension - Basic",
+	"version"			: "0.1",
+
+	"permissions"		: [
+		"storage"
+	],
+
+	"background"		: {
+		"scripts"		: [ "jquery-2.1.1.min.js", "jsencrypt.min.js", "base64.js", "forge.min.js", "encryption.js", "background.js" ],
+		"persistent"	: false
+	},
+
+	"page_action"		: {
+		"default_title" : "Pretty Good ID",
+		"default_icon"	: "icon.png",
+		"default_popup"	: "popup.html"
+	},
+
+	"content_scripts"	: [ {
+		"matches"		: [ "http://*/*" ],
+		"js"			: [ "jquery-2.1.1.min.js", "content.js" ]
+	} ],
+
+	"options_page"		: "options.html"
+}
