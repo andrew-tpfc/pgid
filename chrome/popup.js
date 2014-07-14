@@ -1,29 +1,39 @@
 "use strict";
 
 $(document).ready(function() {
-	// Make sure at least one PGID has been loaded
-	var idlist = chrome.extension.getBackgroundPage().idlist;
-	if (Object.keys(idlist).length === 0) {
-		alert('No PGID has been loaded yet. Please generate or load at least one PGID from the extension options page.');
-		return;
-	}
-
-	// Update key lists
-	var lists = [ $("#register_list"), $("#login_list"), $("#update_list1"), $("#update_list2"), $("#updatepw_list") ];
-	$.each(lists, function() {
-		var options = this;
-		for (var uid in idlist) {
-			options.append($("<option />").val(uid).text(shorten(idlist[uid].name, 25)));
+	var vault = chrome.extension.getBackgroundPage().vault;
+	vault.init(function(reqPassword) {
+		if (reqPassword || vault.size() == 0) {
+			$('#register_panel').remove();
+			$('#login_panel').remove();
+			$('#update_panel').remove();
+			$('#updatepw_panel').remove();
+			$('[id=options_url]').on('click', function() { onOptionsClick(); });
+			if (reqPassword) $('#error1_panel').remove(); else $('#error2_panel').remove();
+			if (reqPassword) console.log('#1'); else console.log('#2');
+		} else {
+			// Update key lists
+			var idlist = chrome.extension.getBackgroundPage().idlist;
+			var lists = [ $("#register_list"), $("#login_list"), $("#update_list1"), $("#update_list2"), $("#updatepw_list") ];
+			$.each(lists, function() {
+				var options = this;
+				for (var uid in idlist) {
+					options.append($("<option />").val(uid).text(shorten(idlist[uid].name, 25)));
+				}
+			});
+			// Enable/disable relevent functions based on declarations in page HTML
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+				chrome.tabs.sendMessage(tabs[0].id, { tabId: tabs[0].id, cmd: 'init' }, initPopup);
+			});
 		}
-	});
-
-	// Enable/disable relevent functions based on declarations in page HTML
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, { tabId: tabs[0].id, cmd: 'init' }, initPopup);
 	});
 });
 
 function initPopup(msg) {
+	console.log(msg);
+	// Error messages should be hidden
+	$('#error1_panel').remove();
+	$('#error2_panel').remove();
 	// Enable/disable register function
 	if (msg === undefined || msg.register === undefined) {
 		$('#register_panel').remove();
@@ -57,6 +67,17 @@ function initPopup(msg) {
 			onUpdatePwClick(msg);
 		});
 	}
+	// Bind all the options button
+	$('[id=options]').bind('click', function() {
+		onOptionsClick();
+	});
+}
+
+function onOptionsClick() {
+	var optionsUrl = chrome.extension.getURL('options.html');
+	chrome.tabs.query({url: optionsUrl}, function(tabs) {
+		if (tabs.length) chrome.tabs.update(tabs[0].id, {active: true}); else  chrome.tabs.create({url: optionsUrl});
+    });
 }
 
 function onRegisterClick(msg) {

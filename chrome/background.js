@@ -17,7 +17,89 @@ function onTabUpdated(msg) {
 	}
 }
 
+var cryptkey = '';
 var idlist = {};
+var vault = {
+	// init() returns 'true' if password is required, 'false' if otherwise.
+	init: function(callback) {
+		if (Object.keys(idlist).length > 0) {
+			callback(false);
+			return;
+		}
+		try {
+			chrome.storage.local.get('idlist', function(retval) {
+				vault.tmplist = retval.idlist;
+				for (var id in vault.tmplist) {
+					if (!vault.tmplist[id].keytext.match(/^pgid-uid:\s+(.*)$/m)) {
+						callback(true);
+						return;
+					}
+				}
+				idlist = vault.tmplist;
+				callback(false);
+			});
+		} catch(err) {
+			console.log(err);
+			callback(false);
+		}
+	},
+	// decrypt returns 'true' if success, 'false' if failure.
+	decrypt: function(password, callback) {
+		var tmpkey = CryptoJS.SHA1(password).toString(CryptoJS.enc.Base64);
+		var tmplist = $.extend(true, {}, vault.tmplist);
+		for (var id in tmplist) {
+			try {
+				tmplist[id].keytext = CryptoJS.AES.decrypt(tmplist[id].keytext, tmpkey).toString(CryptoJS.enc.Utf8);
+			} catch(err) {
+				console.log(err);
+				return false;
+			}
+			if (!tmplist[id].keytext.match(/^pgid-uid:\s+(.*)$/m)) return false;
+		}
+		cryptkey = tmpkey;
+		idlist = tmplist;
+		return true;
+	},
+	add: function(uid, dspname, keytext) {
+		idlist[uid] = { name: dspname, keytext: keytext};
+		persistStore();
+	},
+	remove: function(uid) {
+		delete idlist[uid];
+		persistStore();
+	},
+	// getSorted() returns array of uids sorted by display name order
+	getSorted: function() {
+		var names = new Array();
+		var uids = {};
+		for (var uid in idlist) {
+			names.push(idlist[uid].name);
+			uids[idlist[uid].name] = uid;
+		}
+		names.sort();
+		var result = new Array();
+		for (var i in names) result.push(uids[names[i]]);
+		return result;
+	},
+	setPassword: function(password) {
+		cryptkey = '';
+		if (password.length > 0) cryptkey = CryptoJS.SHA1(password).toString(CryptoJS.enc.Base64);
+		persistStore();
+	},
+	size: function() {
+		return Object.keys(idlist).length;
+	}
+}
+
+function persistStore() {
+	var tmplist = $.extend(true, {}, idlist);
+	if (cryptkey.length > 0) {
+		for (var id in tmplist) {
+			tmplist[id].keytext = CryptoJS.AES.encrypt(tmplist[id].keytext, cryptkey).toString();
+		}
+	}
+	chrome.storage.local.set({'idlist': tmplist});
+}
 
 chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
 	switch(msg.cmd) {
@@ -72,7 +154,6 @@ function doRegisterOrLogin(cmd, msg) {
 		async: false
 	})
 	.done(function(reply) {
-		console.log(JSON.stringify(reply));
 		if (reply && reply.error) {
 			alert('Error: ' + reply.error);
 		} else {
