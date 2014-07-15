@@ -1,8 +1,8 @@
 {
 	"manifest_version"	: 2,
 	"name"				: "Pretty Good ID",
-	"description"		: "Pretty Good ID - Chrome Extension - Basic",
-	"version"			: "0.1",
+	"description"		: "Pretty Good ID",
+	"version"			: "0.2.1",
 
 	"background"		: {
 		"scripts"		: [
@@ -29,7 +29,5 @@
 	
 	"web_accessible_resources"	: [ "options.html" ],
 	
-	"permissions"		: [
-          "storage"
-    ]
+	"permissions"		: [ "storage" ]
 }

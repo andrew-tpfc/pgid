@@ -27,15 +27,17 @@ var vault = {
 			return;
 		}
 		try {
-			chrome.storage.local.get('idlist', function(retval) {
-				vault.tmplist = retval.idlist;
-				for (var id in vault.tmplist) {
-					if (!vault.tmplist[id].keytext.match(/^pgid-uid:\s+(.*)$/m)) {
-						callback(true);
-						return;
+			chrome.storage.local.get(null, function(retval) {
+				if (retval.idlist !== undefined) { 
+					vault.tmplist = retval.idlist;
+					for (var id in vault.tmplist) {
+						if (!vault.tmplist[id].keytext.match(/^pgid-uid:\s+(.*)$/m)) {
+							callback(true);
+							return;
+						}
 					}
+					idlist = vault.tmplist;
 				}
-				idlist = vault.tmplist;
 				callback(false);
 			});
 		} catch(err) {
@@ -61,7 +63,7 @@ var vault = {
 		return true;
 	},
 	add: function(uid, dspname, keytext) {
-		idlist[uid] = { name: dspname, keytext: keytext};
+		idlist[uid] = { name: dspname, keytext: keytext };
 		persistStore();
 	},
 	remove: function(uid) {
