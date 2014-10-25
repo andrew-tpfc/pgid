@@ -9,11 +9,15 @@ $user = get_session($db);
 if ($user == false) exit(header('Location: login.php'));
 
 $layout = & new tpfcTemplate('templates');
+
 $layout->set('username', $user['username']);
 $layout->set('password', $user['password']);
 $layout->set('sessionid', $user['sessionid']);
 $layout->set('fullname', $user['fullname']);
 $layout->set('email', $user['email']);
-print $layout->fetch('details.php');
+
+$layout->set('title', 'Details');
+$layout->set('body', 'templates/details.php');
+print $layout->fetch('layout.php');
 
 ?>

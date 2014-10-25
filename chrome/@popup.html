@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pretty Good ID</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" href="ext/bootstrap-3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="@style.css" type="text/css">
+	</head>
+	<body>
+		<div id="register_panel">
+			<div class="form-group">
+				<select id="register_list" class="form-control" size="4"></select>
+			</div>
+			<div align="right">
+				<button id="register" class="btn btn-primary btn-sm">Register</button>
+				<button id="options" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-cog"></span></button>
+			</div>
+		</div>
+		<div id="login_panel">
+			<div class="form-group">
+				<select id="login_list" class="form-control" size="4"></select>
+			</div>
+			<div align="right">
+				<button id="login" class="btn btn-primary btn-sm">Login</button>
+				<button id="options" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-cog"></span></button>
+			</div>
+		</div>
+		<div id="updatepw_panel">
+			<div class="form-group">
+				<label for="updatepw_password">Current password:</label>
+				<input id="updatepw_password" type="password" class="form-control" placeholder="password" />
+			</div>
+			<div class="form-group">
+				<label for="updatepw_list">New PGID:</label>
+				<select id="updatepw_list" class="form-control" size="4"></select>
+			</div>
+			<div align="right">
+				<button id="updatepw" class="btn btn-primary btn-sm">Update</button>
+				<button id="options" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-cog"></span></button>
+			</div>
+		</div>
+		<div id="update_panel">
+			<div class="form-group">
+				<label for="update_list1">Current PGID:</label>
+				<select id="update_list1" class="form-control" size="4"></select>
+			</div>
+			<div class="form-group">
+				<label for="update_list2">New PGID:</label>
+				<select id="update_list2" class="form-control" size="4"></select>
+			</div>
+			<div align="right">
+				<button id="update" class="btn btn-primary btn-sm">Update</button>
+				<button id="options" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-cog"></span></button>
+			</div>
+		</div>
+		<div id="error1_panel">
+			<p>No PGID has been loaded yet.</p>
+			<p>Please generate or load at least one PGID from the <a id="options_url" href="#">options page</a>.</p>
+		</div>
+		<div id="error2_panel">
+			<p>Vault is encrypted.</p>
+			<p>Please unlock the vault using the <a id="options_url" href="#">options page</a>.</p>
+		</div>
+		<script src="ext/jquery-2.1.1.min.js"></script>
+		<script src="ext/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+		<script src="common/vault.js"></script>
+		<script src="common/desktop/popup.js"></script>
+		<script src="popup.js"></script>
+	</body>
+</html>

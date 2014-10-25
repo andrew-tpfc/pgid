@@ -19,8 +19,9 @@ if ($cmd == 'register')
 	{
 		// Generate authentication token and encrypt to pubkey
 		$pubkey = openssl_get_publickey($pubkeytext);
-		$token = bin2hex(openssl_random_pseudo_bytes(32));
-		file_put_contents("/tmp/token.$token", $pubkeytext);
+		$token = bin2hex(openssl_random_pseudo_bytes(120));
+		$hash = hash('sha256', $token);
+		file_put_contents("/tmp/token.$hash", $pubkeytext);
 		openssl_public_encrypt($token, $token_encrypted, $pubkey); 
 
 		// Send back encrypted authentication token (challenge)
@@ -31,7 +32,7 @@ if ($cmd == 'register')
 	else
 	{
 		// Verify authentication token
-		if (verify_auth_token($token, $pubkeytext) == false) exit(error_msg($layout, 'Authentication error!'));
+		if (verify_auth_token($token, $pubkeytext, 60, false) == false) exit(error_msg($layout, 'Authentication error!'));
 		
 		// Extract header information
 		if (preg_match('/^pgid-fullname:\s+(.*)$/m', $pgid, $matches)) $fullname = $matches[1];
@@ -49,7 +50,7 @@ if ($cmd == 'register')
 else if ($cmd == 'register2')
 {
 	// Make sure token is valid and has not timed out
-	if (verify_auth_token($token, $pubkeytext, 5 * 60) == false) exit(header('Location: register.php'));
+	if (verify_auth_token($token, $pubkeytext, 5*60) == false) exit(header('Location: register.php'));
 
 	// Make sure that user is not already registered i.e. his public key
 	// is not already in the database. Note that we perform the check here
@@ -89,12 +90,16 @@ else if ($cmd == 'register2')
 	{
 		$stmt = $db->prepare('INSERT INTO users (username, password, fullname, email) VALUES(:username, :password, :fullname, :email)');
 		$stmt->execute(array(':username' => $username, ':password' => $pubkeytext, ':fullname' => $fullname, ':email' => $email));
-		print $layout->fetch('register_success.php');
+		$layout->set('title', 'Registration');
+		$layout->set('body', 'templates/register_success.php');
+		print $layout->fetch('layout.php');
 		exit;
 	}
 }
 
+$layout->set('title', 'Registration');
+$layout->set('body', 'templates/pgid-register.php');
 $layout->set('error', $error);
-print $layout->fetch('pgid-register.php');
+print $layout->fetch('layout.php');
 
 ?>

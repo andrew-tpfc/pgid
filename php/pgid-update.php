@@ -28,20 +28,21 @@ if ($cmd == 'update')
 		exit;
 	}
 
-
 	$db = db_connect();
 	if ($otoken == '' || $ntoken == '')
 	{
 		// Generate authentication token and encrypt to oPGID
 		$opubkey = openssl_get_publickey($opubkeytext);
-		$otoken = bin2hex(openssl_random_pseudo_bytes(32));
-		file_put_contents("/tmp/token.$otoken", $opubkeytext);
+		$otoken = bin2hex(openssl_random_pseudo_bytes(120));
+		$ohash = hash('sha256', $otoken);
+		file_put_contents("/tmp/token.$ohash", $opubkeytext);
 		openssl_public_encrypt($otoken, $otoken_encrypted, $opubkey); 
 
 		// Generate authentication token and encrypt to nPGID
 		$npubkey = openssl_get_publickey($npubkeytext);
-		$ntoken = bin2hex(openssl_random_pseudo_bytes(32));
-		file_put_contents("/tmp/token.$ntoken", $npubkeytext);
+		$ntoken = bin2hex(openssl_random_pseudo_bytes(120));
+		$nhash = hash('sha256', $ntoken);
+		file_put_contents("/tmp/token.$nhash", $npubkeytext);
 		openssl_public_encrypt($ntoken, $ntoken_encrypted, $npubkey); 
 
 		// Send back encrypted tokens
@@ -72,7 +73,9 @@ if ($cmd == 'update')
 
 		// Logout user
 		setcookie('sessionid', '', time() - 3600);
-		print $layout->fetch('update_success.php');
+		$layout->set('title', 'Update');
+		$layout->set('body', 'templates/update_success.php');
+		print $layout->fetch('layout.php');
 	}
 }
 

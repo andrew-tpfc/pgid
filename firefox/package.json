@@ -1,0 +1,14 @@
+{
+    "id": "jid1-Q69xwBDlBq7rWw",
+    "name": "pgid-desktop",
+	"version": "0.3.5",
+	"icon": "data/images/icon-48.png",
+	"icon64": "data/images/icon-64.png",
+	"title": "Pretty Good ID",
+    "description": "Pretty Good ID",
+	"homepage": "http://www.pgid.org/",
+    "license": "MPL 2.0",
+    "author": "Andrew Lee",
+	"dependencies" : [ "barbutton" ],
+	"permissions" : { "private-browsing": true }
+}

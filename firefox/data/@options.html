@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pretty Good ID</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" href="ext/bootstrap-3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="@style.css" type="text/css">
+	</head>
+	<body>
+		<!-- Modal dialog for getting decryption password -->
+		<div id="dlg-getpassword" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Vault is encrypted</h4>
+					</div>
+					<div class="modal-body">
+						<div id="grp-getpassword" class="form-group">
+							<label for="fld-getpassword"><b>Enter password</b></label>
+							<input id="fld-getpassword" class="form-control" type="password" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="btn-getpassword" class="btn btn-primary">OK</button>
+						<button id="btn-getpassword-cancel" class="btn">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal dialog for setting decryption password -->
+		<div id="dlg-setpassword" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Set vault password</h4>
+					</div>
+					<div class="modal-body">
+						<div id="grp-password1" class="form-group">
+							<label for="fld-password1"><b>Enter password</b></label>
+							<input id="fld-password1" class="form-control" type="password" />
+						</div>
+						<div id="grp-password2" class="form-group">
+							<label for="fld-password2"><b>Verify password</b></label>
+							<input id="fld-password2" class="form-control" type="password" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="btn-setpassword2" class="btn btn-primary">OK</button>
+						<button id="btn-setpassword2-cancel" class="btn">Cancel</button>
+						<button id="btn-clearpassword" class="btn">Clear</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal dialog for getting security PIN for PGID QRCode -->
+		<div id="dlg-getpin" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Import PGID</h4>
+					</div>
+					<div class="modal-body">
+						<div id="grp-getpin" class="form-group">
+							<label for="fld-getpin"><b>Enter PIN (dashes optional)</b></label>
+							<input id="fld-getpin" class="form-control" type="text" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="btn-getpin" class="btn btn-primary">OK</button>
+						<button id="btn-getpin-cancel" class="btn">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal warning for clearing encryption password -->
+		<div id="dlg-clearpassword" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">This will clear the vault password</h4>
+					</div>
+					<div class="modal-body">
+						<h4>Are you sure?</h4>
+					</div>
+					<div class="modal-footer">
+						<button id="btn-clearpassword-yes" class="btn btn-primary">Yes</button>
+						<button id="btn-clearpassword-no" class="btn">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal form to fill in before key generation -->
+		<div id="dlg-generate" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">New PGID</h4>
+					</div>
+					<div class="modal-body">
+						<div id="grp-desc" class="form-group">
+							<label for="fld-desc"><b>Description</b></label>
+							<input id="fld-desc" class="form-control" type="text" placeholder="Optional. Lets you identify the PGID by giving it a meaningful label." />
+						</div>
+						<div class="form-group">
+							<label for="fld-fullname"><b>Full name</b></label>
+							<input id="fld-fullname" class="form-control" type="text" placeholder="Optional. Helps prefill registration form for websites that require this information." />
+						</div>
+						<div class="form-group">
+							<label for="fld-shortname"><b>Short name (or nickname)</b></label>
+							<input id="fld-shortname" class="form-control" type="text" placeholder="Optional. Helps prefill registration form for websites that supports a nick or alias." />
+						</div>
+						<div class="form-group">
+							<label for="fld-email"><b>Email address</b></label>
+							<input id="fld-email" class="form-control" type="email" placeholder="Optional. Helps prefill registration form for websites that require an email address." />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="btn-generate2" class="btn btn-primary">Generate</button>
+						<button id="btn-generate2-cancel" class="btn">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal progress bar shown during key generation -->
+		<div id="dlg-progress" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="progress progress-striped active">
+						  <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+							Generating... This could take a few minutes...
+						  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal confirm dialog for PGID deletion -->
+		<div id="dlg-confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h4>Are you sure?</h4>
+					</div>
+					<div class="modal-footer">
+						<button id="btn-delete2" class="btn btn-primary">Yes</button>
+						<button id="btn-delete2-cancel" class="btn">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Main options page -->
+		<div class="container-fluid">
+			<div class="form-group">
+				<label for="sel-vault"><b>My Vault</b></label>
+				<select id="sel-vault" class="form-control" size="10"></select>
+				<small><i>(Double-click on entry to display QR-Code)</i></small>
+			</div>
+			<button id="btn-loadfile" class="btn btn-primary">Load from QR-Code</button>
+			<button id="btn-generate" class="btn btn-primary">Generate new PGID</button>
+			<button id="btn-delete" class="btn btn-primary">Delete</button>
+			<p>
+				<p>The entire vault can optionally be encrypted so that its contents can only be accessed if decrypted with the correct password. This ensures that no one is able to extract your PGIDs even if they gain illegal access to the content of your device.</p>
+				<button id="btn-setpassword" class="btn btn-primary">Set vault password</button>
+			</p>
+			<input id="fileloader" type="file" name="qrfile" accept="image/*" style="display:none" />
+		</div>
+		<!-- Modal dialog box to display QR-Code for selected entry -->
+		<div id="dlg-qrcode" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			 <div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title"><img src="images/id.png" width="32" />&nbsp;<span id="display-name"></span></h4>
+					</div>
+					<div class="modal-body">
+						<img id="fld-qrcode" width="380" height="380" />
+					</div>
+					<div class="modal-footer">
+						<h4 align="left"><b>PIN: <span id="unlock-pin"></span></b></h4>
+					</div>
+					<canvas id="qr-canvas" width="10" height="10" style="display:none" />
+				</div>
+			</div>
+		</div>
+		<!-- Note: The Firefox list of JS libraries to load is located in main.js -->
+		<script src="ext/jquery-2.1.1.min.js"></script>
+		<script src="ext/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+		<script src="ext/jsencrypt-2.1.0.min.js"></script> <!-- https://github.com/travist/jsencrypt -->
+		<script src="ext/cryptojs-3.1.2/rollups/sha1.js"></script> <!-- https://code.google.com/p/crypto-js/ -->
+		<script src="ext/cryptojs-3.1.2/rollups/aes.js"></script> <!-- https://code.google.com/p/crypto-js/ -->
+		<script src="ext/load-image.all.min.js"></script> <!-- https://github.com/blueimp/JavaScript-Load-Image -->
+		<script src="ext/qrencoder.min.js"></script> <!-- https://bitbucket.org/lifthrasiir/qrjs/ -->
+		<script src="ext/qrdecoder.min.js"></script> <!-- https://github.com/kaarposoft/qrlogo -->
+		<script src="ext/pako.min.js"></script> <!-- https://github.com/nodeca/pako -->
+		<script src="common/utils.js"></script>
+		<script src="common/vault.js"></script>
+		<script src="common/desktop/options.js"></script>
+		<script src="options.js"></script>
+	</body>
+</html>

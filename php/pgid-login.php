@@ -19,8 +19,9 @@ if ($cmd == 'login')
 	{
 		// Generate authentication token and encrypt to pubkey
 		$pubkey = openssl_get_publickey($pubkeytext);
-		$token = bin2hex(openssl_random_pseudo_bytes(32));
-		file_put_contents("/tmp/token.$token", $pubkeytext);
+		$token = bin2hex(openssl_random_pseudo_bytes(120));
+		$hash = hash('sha256', $token);
+		file_put_contents("/tmp/token.$hash", $pubkeytext);
 		openssl_public_encrypt($token, $token_encrypted, $pubkey); 
 
 		// Send back encrypted token (challenge)

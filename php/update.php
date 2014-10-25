@@ -15,8 +15,16 @@ $error = '';
 if (empty($_POST))
 {
 	// Find out if user is currently on password or PGID and adjust accordingly
-	if (is_pgid($user['password'])) $layout->set('updatetype', 'pgid-update');
-	else $layout->set('updatetype', 'pgid-updatepw');
+	if (is_pgid($user['password'])) 
+	{
+		$layout->set('pgidfunc', 'pgid-update');
+		$layout->set('pgidurl', 'http://demo.pgid.org/pgid-update.php');
+	}
+	else
+	{
+		$layout->set('pgidfunc', 'pgid-updatepw');
+		$layout->set('pgidurl', 'http://demo.pgid.org/pgid-updatepw.php');
+	}
 }
 else
 {
@@ -36,12 +44,16 @@ else
 		$stmt = $db->prepare('UPDATE users set password=:password where uid=:uid');
 		$stmt->execute(array(':password' => password_hash($npassword), ':uid' => $user['uid']));
 		setcookie('sessionid', '', time() - 3600);
-		print $layout->fetch('update_success.php');
+		$layout->set('title', 'Update');
+		$layout->set('body', 'templates/update_success.php');
+		print $layout->fetch('layout.php');
 		exit;
 	}
 }
 
+$layout->set('title', 'Update');
+$layout->set('body', 'templates/update.php');
 $layout->set('error', $error);
-print $layout->fetch('update.php');
+print $layout->fetch('layout.php');
 
 ?>

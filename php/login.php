@@ -17,8 +17,8 @@ if (!empty($_POST))
 	$password = $_POST['password']; $layout->set('password', $password);
 	
 	// Validate form fields
-	if ($username == '') $error = 'Username cannot be blank!';
-	elseif ($password == '') $error = 'Password cannot be blank!';
+	if ($username == '') $error = 'Username cannot be blank';
+	elseif ($password == '') $error = 'Password cannot be blank';
 	
 	// Validate login credentials
 	if ($error == '')
@@ -29,7 +29,7 @@ if (!empty($_POST))
 		// If user record cannot be retrieved or password is incorrect, display error
 		if ($user == false || !password_verify($password, $user['password']))
 		{
-			$error = 'Your username or password cannot be verified!';
+			$error = 'Invalid username/password';
 		}
 		// Otherwise take steps for login
 		else
@@ -51,7 +51,11 @@ if (!empty($_POST))
 	}
 }
 
+$layout->set('title', 'Login');
+$layout->set('pgidfunc', 'pgid-login');
+$layout->set('pgidurl', 'http://demo.pgid.org/pgid-login.php');
+$layout->set('body', 'templates/login.php');
 $layout->set('error', $error);
-print $layout->fetch('login.php');
+print $layout->fetch('layout.php');
 
 ?>

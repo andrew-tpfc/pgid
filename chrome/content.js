@@ -1,9 +1,13 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 "use strict";
 
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 	if (msg.cmd) {
 		switch(msg.cmd) {
-			case 'init':
+			case 'get-headers':
 				sendResponse({
 					tabId	 : msg.tabId,
 					register : $('link[rel=pgid-register]').eq(0).attr('href'),
@@ -12,36 +16,18 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 					updatepw : $('link[rel=pgid-updatepw]').eq(0).attr('href')
 				});
 				break;
-			case 'login':
+			case 'show-loader':
+				showLoader(msg.status);
+				break;
 			case 'register':
-				var linkname = 'link[rel=pgid-' + msg.cmd + ']';
-				var formhtml = '<form id="pgidform" method="post" action="' + $(linkname).eq(0).attr('href') + '">';
-				formhtml += '<input type="hidden" name="cmd" value="' + msg.cmd + '" />';
-				formhtml += '<input type="hidden" name="pgid" value="' + msg.pgid + '" />';
-				formhtml += '<input type="hidden" name="token" value="' + msg.token + '" />';
-				formhtml += '</form>';
-				document.body.innerHTML += formhtml;
-				$('#pgidform').submit();
-				break;
+			case 'login':
 			case 'update':
-				var linkname = 'link[rel=pgid-' + msg.cmd + ']';
-				var formhtml = '<form id="pgidform" method="post" action="' + $(linkname).eq(0).attr('href') + '">';
-				formhtml += '<input type="hidden" name="cmd" value="' + msg.cmd + '" />';
-				formhtml += '<input type="hidden" name="opgid" value="' + msg.opgid + '" />';
-				formhtml += '<input type="hidden" name="npgid" value="' + msg.npgid + '" />';
-				formhtml += '<input type="hidden" name="otoken" value="' + msg.otoken + '" />';
-				formhtml += '<input type="hidden" name="ntoken" value="' + msg.ntoken + '" />';
-				formhtml += '</form>';
-				document.body.innerHTML += formhtml;
-				$('#pgidform').submit();
-				break;
 			case 'updatepw':
 				var linkname = 'link[rel=pgid-' + msg.cmd + ']';
 				var formhtml = '<form id="pgidform" method="post" action="' + $(linkname).eq(0).attr('href') + '">';
-				formhtml += '<input type="hidden" name="cmd" value="' + msg.cmd + '" />';
-				formhtml += '<input type="hidden" name="password" value="' + msg.password + '" />';
-				formhtml += '<input type="hidden" name="npgid" value="' + msg.npgid + '" />';
-				formhtml += '<input type="hidden" name="token" value="' + msg.token + '" />';
+				Object.keys(msg).forEach(function(key) {
+					formhtml += '<input type="hidden" name="' + key + '" value="' + msg[key] + '" />';
+				});
 				formhtml += '</form>';
 				document.body.innerHTML += formhtml;
 				$('#pgidform').submit();

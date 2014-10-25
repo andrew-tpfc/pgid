@@ -38,13 +38,18 @@ if (!empty($_POST))
 	{
 		$stmt = $db->prepare('INSERT INTO users (username, password, fullname, email) VALUES(:username, :password, :fullname, :email)');
 		$stmt->execute(array(':username' => $username, ':password' => password_hash($password), ':fullname' => $fullname, ':email' => $email));
-		print $layout->fetch('register_success.php');
+		$layout->set('title', 'Registration');
+		$layout->set('body', 'templates/register_success.php');
+		print $layout->fetch('layout.php');
 		exit;
 	}
-
 }
 
+$layout->set('title', 'Registration');
+$layout->set('pgidfunc', 'pgid-register');
+$layout->set('pgidurl', 'http://demo.pgid.org/pgid-register.php');
+$layout->set('body', 'templates/register.php');
 $layout->set('error', $error);
-print $layout->fetch('register.php');
+print $layout->fetch('layout.php');
 
 ?>

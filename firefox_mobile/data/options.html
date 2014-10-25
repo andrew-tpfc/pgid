@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Pretty Good ID</title>
+	<link rel="shortcut icon" href="images/icon-16.png">
+	<link rel="stylesheet" href="ext/jquery.mobile-1.4.4/jquery.mobile-1.4.4.min.css">
+	<style>.has-error { background-color: rgba(255, 0, 0, 0.1) !important;}</style>
+</head>
+<body>
+	<div id="getpassword-page" data-role="page">
+		<div role="main" class="ui-content">
+			<label id="lbl.getpin" for="fld-getpin"><b>Enter password</b></label>
+			<input id="fld-getpassword" class="form-control" type="password" />
+			<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+			<a id="btn-getpassword" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">OK</a>
+		</div>
+	</div>	
+	<div id="home-page" data-role="page">
+		<div role="main" class="ui-content">
+			<ul id="vault" data-role="listview" data-inset="true">
+				<li data-role="list-divider">My Vault</li>
+			</ul>
+			<a id="btn-generate" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-right ui-icon-user" href="#gen-page">Generate new PGID</a>
+			<a id="btn-loadfile" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-right ui-icon-camera" href="#">Import from QRCode</a>
+			<a id="btn-setpassword" class="ui-btn ui-corner-all ui-btn-icon-right ui-shadow ui-icon-gear" href="#setpassword-page">Set vault password</a>
+			<input id="fileloader" type="file" name="qrfile" accept="image/*" style="display:none" />
+		</div>
+	</div>
+	<div id="getpin-page" data-role="page">
+		<div role="main" class="ui-content">
+			<label id="lbl.getpin" for="fld-getpin"><b>Enter PIN (dashes optional)</b></label>
+			<input id="fld-getpin" class="form-control" type="number" />
+			<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+			<a id="btn-getpin" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">OK</a>
+		</div>
+	</div>	
+	<div id="gen-page" data-role="page">
+		<div role="main" class="ui-content">
+			<label for="fld-desc"><b>Description</b></label>
+			<input id="fld-desc" class="form-control" type="text" placeholder="Optional. Helps identify PGID." />
+			<label for="fld-fullname"><b>Full name</b></label>
+			<input id="fld-fullname" class="form-control" type="text" placeholder="Optional. Helps prefill registration forms." />
+			<label for="fld-shortname"><b>Short name (or nickname)</b></label>
+			<input id="fld-shortname" class="form-control" type="text" placeholder="Optional. Helps prefill registration forms." />
+			<label for="fld-email"><b>Email address</b></label>
+			<input id="fld-email" class="form-control" type="email" placeholder="Optional. Helps prefill registration form." />
+			<button id="btn-generate2" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-right ui-icon-check">Generate</button>
+			<a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-right ui-icon-back" data-rel="back">Cancel</a>
+		</div>
+	</div>
+	<div id="setpassword-page" data-role="page">
+		<div role="main" class="ui-content">
+			<div class="modal-content">
+				<label for="fld-password1"><b>Set vault password</b></label>
+				<input id="fld-password1" class="form-control" type="password" />
+				<label for="fld-password2"><b>Verify password</b></label>
+				<input id="fld-password2" class="form-control" type="password" />
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+				<a id="btn-setpassword2" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">OK</a>
+				<a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="popup" href="#clearpassword-dlg">Clear</a>
+			</div>
+		</div>
+		<div id="clearpassword-dlg" data-role="popup" data-overlay-theme="b" data-theme="b" class="ui-corner-all" style="max-width:300px;">
+			<div role="main" class="ui-content">
+				<h3 class="ui-title">Confirm clear vault password?</h3>
+				<p>This action cannot be undone.</p>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+				<a id="btn-clearpassword" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">Proceed</a>
+			</div>
+		</div>	
+	</div>
+	<div id="details-page" data-role="page">
+		<div role="main" class="ui-content">
+			<h4><img src="images/id.png" width="32" />&nbsp;<span id="display-name"></span></h4>
+			<img id="fld-qrcode" width="300" height="300" />
+			<h4><b>PIN: <span id="unlock-pin"></span></b></h4>
+			<a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-right ui-icon-back" data-rel="back">Back</a>
+			<a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-icon-right ui-icon-delete" data-rel="popup" href="#delete-dlg">Delete</a>
+		</div>
+		<div id="delete-dlg" data-role="popup" data-overlay-theme="b" data-theme="b" class="ui-corner-all" style="max-width:300px;">
+			<div role="main" class="ui-content">
+				<h3 class="ui-title">Confirm delete?</h3>
+				<p>This action cannot be undone.</p>
+				<a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+				<a id="btn-delete2" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">Delete</a>
+			</div>
+		</div>	
+	</div>
+	<canvas id="canvas" width="10" height="10" style="display:none" />
+	<script src="ext/jquery-2.1.1.min.js"></script>
+	<script src="ext/jquery.mobile-1.4.4/jquery.mobile-1.4.4.min.js"></script>
+</body>
+</html>

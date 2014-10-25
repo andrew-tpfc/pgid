@@ -2,7 +2,7 @@
 
 function db_connect()
 {
-	$db = new PDO('mysql:host=localhost;dbname=pgid;charset=utf8', 'pgid', 'password');
+	$db = new PDO('mysql:host=localhost;dbname=pgid;charset=utf8', '<user>', '<pass>');
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 	return $db;
@@ -47,7 +47,9 @@ function error_msg($layout, $msg, $json = false)
 	else
 	{
 		$layout->set('error', $msg);
-		print $layout->fetch('error.php');
+		$layout->set('title', 'Error');
+		$layout->set('body', 'templates/error.php');
+		print $layout->fetch('layout.php');
 	}
 }
 
@@ -63,11 +65,14 @@ function extract_pubkeytext($keytext)
 	return str_replace("\xd", '', $matches[0]);
 }
 
-function verify_auth_token($token, $pubkeytext, $timeout = 60)
+function verify_auth_token($token, $pubkeytext, $timeout = 60, $unlink = true)
 {
-	return (file_exists("/tmp/token.$token") &&
-		time() - filemtime("/tmp/token.$token") <= $timeout &&
-		file_get_contents("/tmp/token.$token") == $pubkeytext);
+	$hash = hash('sha256', $token);
+	$result = (file_exists("/tmp/token.$hash") &&
+		time() - filemtime("/tmp/token.$hash") <= $timeout &&
+		file_get_contents("/tmp/token.$hash") == $pubkeytext);
+	if ($unlink) unlink("/tmp/token.$hash");
+	return $result;
 }
 
 ?>
